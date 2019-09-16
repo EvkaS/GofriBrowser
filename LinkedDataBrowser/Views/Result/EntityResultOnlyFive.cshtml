@@ -1,0 +1,106 @@
+﻿@model LinkedDataBrowser.Models.ViewModels.PredicateResultWrapperList
+
+@using LinkedDataBrowser.Models.ViewModels;
+
+@{
+    ViewData["Title"] = "EntityResultOnlyFive";
+}
+
+    <h2>@ViewData["Title"]</h2>
+
+<partial name="_DescriptionPartial" />
+
+@if (ViewData.TryGetValue(nameof(EntityInfo.EntityIri), out object entityIri))
+{
+    <h3 style="color: forestgreen">@ViewMethods.TryConvertToPrefixedExpression(entityIri.ToString())</h3>
+    <partial name="_GoToPagePartial" model="@entityIri.ToString()" />
+}
+
+@*<partial name="_ExecutionTimePartial" model="@ViewData["ExecutionTime"]" />*@
+
+@{
+    SearchInfo info = ViewData[nameof(SearchInfo)] as SearchInfo;
+}
+
+@if (info != null && Model.HasObjects)
+{
+    <div class="row">
+        <div class="col-md-3">
+            @if (info.PageNumber > 1)
+            {
+                var routeParamPrevious = ViewMethods.CreateRouteData(info, (string)entityIri, info.PageNumber - 1);
+
+                <a asp-controller="Result" asp-action="EntityResultOnlyFive" asp-all-route-data="routeParamPrevious" class="btn btn-default">Previous</a>
+            }
+        </div>
+        <div class="col-md-3 col-lg-offset-6">
+            @if (Model.HasNextPage)
+            {
+                var routeParamNext = ViewMethods.CreateRouteData(info, (string)entityIri, info.PageNumber + 1);
+
+                <a asp-controller="Result" asp-action="EntityResultOnlyFive" asp-all-route-data="routeParamNext" class="btn btn-default pull-right">Next</a>
+            }
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-bordered">
+                <tr>
+                    <th>predicate</th>
+                    <th>object</th>
+                </tr>
+                @foreach (var wrapper in Model)      /* enumerate all predicates */
+                {
+                    //make sure there are some objects
+                    if (wrapper.ObjectCount > 0)
+                    {
+                        int rowspan = wrapper.ObjectCount;
+                        if (rowspan < wrapper.ExpectedObjectCount)
+                        {
+                            // rowspan++;
+                        }
+                        <tr>
+                            <td class="q_result" rowspan="@rowspan.ToString()">
+                                <partial name="_ResultNodeWrapperPartial" model="@wrapper" view-data="@ViewData" />@*   write predicate   *@
+                                        @*<span>(@wrapper.ExpectedObjectCount)</span>*@
+                                @if (wrapper.ExpectedObjectCount != wrapper.ObjectCount)
+                                {
+                                    var routeParam = ViewMethods.CreateRouteData(info, (string)entityIri, wrapper.ToString(), wrapper.ExpectedObjectCount);
+                                    <br /><br /><br /><br /><br /><br /><br /><!--use something else-->
+                                    <span><a asp-controller="Result" asp-action="EntityResultOnePredicate" asp-all-route-data="routeParam" class="btn btn-primary btn-xs"><i>See all @wrapper.ExpectedObjectCount results</i></a></span>
+                                }
+                            </td>
+                            <td class="q_result">
+                                <partial name="_ResultNodeWrapperPartial" model="@wrapper[0]" view-data="@ViewData" />@*   write object   *@
+                            </td>
+                        </tr>
+                        @for (int i = 1; i < wrapper.ObjectCount; i++) /* enumerate all objects */
+                        {
+                            <tr>
+                                <td class="q_result">
+                                    <partial name="_ResultNodeWrapperPartial" model="@wrapper[i]" view-data="@ViewData" />@*   write object   *@
+                                </td>
+                            </tr>
+                        }
+
+                        @* TODO: remove this if *@
+                        if (false/*rowspan != wrapper.ObjectCount*/)
+                        {
+                            <tr>
+                                <td>
+                                    <a class="btn btn-primary btn-xs"><i>See all @wrapper.ExpectedObjectCount results</i></a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                }
+            </table>
+        </div>
+    </div>
+}
+else
+{
+    <partial name="_NoDataFoundPartial" />
+}
+

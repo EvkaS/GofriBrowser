@@ -1,0 +1,48 @@
+﻿@model VDS.RDF.INode
+
+@using LinkedDataBrowser.Models.ViewModels;
+@using System.Net;
+@using VDS.RDF;
+
+
+@if (Model is IUriNode)
+{
+    var iriNode = (UriNode)Model;
+    bool infoExists = ViewData.TryGetValue(nameof(SearchInfo), out object obj);
+    SearchInfo info = infoExists ? obj as SearchInfo : null;
+
+    //we always want the first page of the new search result
+    var routeParam = ViewMethods.CreateRouteData(info, iriNode.ToString(), 1);
+
+    <a asp-controller="Result" asp-action="EntityResultOnlyFive" asp-all-route-data="routeParam">
+        @ViewMethods.TryConvertToPrefixedExpression(iriNode.ToString())
+    </a>
+    <span class="whole_iri">@WebUtility.UrlDecode(iriNode.ToString())</span>
+}
+
+else if (Model is ILiteralNode)
+{
+    var literalNode = (ILiteralNode)Model;
+    @literalNode.Value
+    if (literalNode.DataType != null)
+    {
+        <span class="label label-success">@ViewMethods.TryConvertToPrefixedExpression(literalNode.DataType.ToString())</span>
+    }
+    <span class="label label-info">@literalNode.Language</span>
+}
+
+else if (Model is IBlankNode)
+{
+    var blankNode = (IBlankNode)Model;
+    @blankNode.ToString()
+}
+
+else if (Model is IGraphLiteralNode)
+{
+    //TODO: write to log that this happended
+}
+
+else if (Model is IVariableNode)
+{
+    //TODO: write to log that this happended
+}

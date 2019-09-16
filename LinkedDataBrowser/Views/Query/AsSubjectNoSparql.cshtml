@@ -1,0 +1,30 @@
+﻿@using LinkedDataBrowser.Models.ViewModels;
+@{
+    ViewBag.Title = "AsSubject";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<partial name="_DescriptionPartial" />
+
+<h2>AsSubjectNoSparql</h2>
+
+<div class="row">
+    <div class="col-md-8 col-md-offset-0 col-sm-8 col-sm-offset-0 col-xs-10 col-xs-offset-1">
+        @using (Html.BeginForm("EntityResultNoSparql", "Result", FormMethod.Get, htmlAttributes: new { @class = "form-horizontal" }))
+        {
+            <div class="form-group">
+                @Html.Label(nameof(EntityInfo.EntityIri), "Entity:",htmlAttributes: new {
+               @class = "col-md-3 control-label"
+           })
+                <div class="col-md-9">
+                    @Html.TextBox(nameof(EntityInfo.EntityIri), "http://dbpedia.org/resource/Prague", new { autofocus = true, required = true, @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-2 col-md-offset-10">
+                    <input type="submit" value="Find" class="btn btn-primary btn-block" />
+                </div>
+            </div>
+        }
+    </div>
+</div>

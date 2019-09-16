@@ -1,0 +1,22 @@
+﻿ @{
+    ViewData["Title"] = "Home Page";
+}
+
+<partial name="_DescriptionPartial" />
+
+<div class="row">
+    <div class="col-md-12">
+        
+        <h3>What would you like to do?</h3>
+
+        <div class="col-md-4">
+            <a class="btn btn-default btn-block" asp-controller="Query" asp-action="AsQuery">Execute a query</a>
+
+            <a class="btn btn-default btn-block" asp-controller="Query" asp-action="AsSubjectNoSparql">Describe an entity(no SPARQL)</a>
+
+            <a class="btn btn-default btn-block" asp-controller="Query" asp-action="AsSubjectOnlyFive">Describe an entity (with 5 objects) <span class="label label-info">NEW</span></a>
+
+            <a class="btn btn-default btn-block" asp-controller="Query" asp-action="AsSubjectMultipleEndpoints">Describe an entity with multiple objects <span class="label label-danger">in progress</span></a>
+        </div>
+    </div>
+</div>

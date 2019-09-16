@@ -1,0 +1,123 @@
+﻿@model VDS.RDF.Query.SparqlResultSet
+
+@using LinkedDataBrowser.Models.ViewModels;
+@using VDS.RDF.Query;
+
+@{
+    ViewBag.Title = "QueryResultSet";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+    <h2>@ViewData["Title"]</h2>
+
+<partial name="_DescriptionPartial" />
+
+@if (ViewData.TryGetValue(nameof(EntityInfo.EntityIri), out object entity))
+{
+    <h3 style="color: forestgreen">@((string)entity)</h3>
+}
+
+@*<partial name="_ExecutionTimePartial" model="@ViewData["ExecutionTime"]" />*@
+
+
+
+
+
+<div class="row">
+    <div class="col-md-12">
+        @switch (Model.ResultsType)
+        {
+            case SparqlResultsType.Boolean:
+                <p>@Model.Result</p>
+                break;
+            case SparqlResultsType.VariableBindings:
+                <table class="table table-bordered hide-long">
+                    <tr>
+                        @foreach (string var in Model.Variables)
+                        {
+                            <th>@var</th>
+                        }
+                    </tr>
+                    @foreach (var result in Model)
+                    {
+                        <tr>
+                            @foreach (string var in Model.Variables)
+                            {
+                                if (result.HasValue(var))
+                                {
+                                    <td class="q_result"><partial name="_ResultINodePartial" model="@result[var]" view-data="@ViewData" /></td>
+                                }
+                                else
+                                {
+                                    <td></td>
+                                }
+                            }
+                        </tr>
+                    }
+                </table>
+                break;
+            case SparqlResultsType.Unknown:
+                <p>Result is unknown.</p>
+                break;
+        }
+    </div>
+</div>
+
+
+@*
+    <td class="q_result">
+        @if (result[var] is IUriNode)
+        {
+            var iriNode = (UriNode)result[var];
+            @PrefixProcessing.TryConvertToPrefixedExpression(iriNode.ToString())
+            <span class="whole_iri">@iriNode.ToString()</span>
+        }
+        else if (result[var] is ILiteralNode)
+        {
+            var literalNode = (ILiteralNode)result[var];
+            @literalNode.Value
+            if (literalNode.DataType != null)
+            {
+                <span class="label label-success">@PrefixProcessing.TryConvertToPrefixedExpression(literalNode.DataType.ToString())</span>
+            }
+            <span class="label label-info">@literalNode.Language</span>
+        }
+        else if (result[var] is IBlankNode)
+        {
+            var blankNode = (IBlankNode)result[var];
+            @blankNode.ToString()
+        }
+        else if (result[var] is IGraphLiteralNode)
+        {
+            //TODO: write to log that this happended
+        }
+        else if (result[var] is IVariableNode)
+        {
+            //TODO: write to log that this happended
+        }
+
+
+            @if (wrapper.NodeType is NodeType.Uri)
+            {
+                @wrapper.IriExpression
+                <span class="whole_iri">@wrapper.OriginalNode</span>
+            }
+            else if (wrapper.NodeType is NodeType.Literal)
+            {
+                @wrapper.LiteralTextExpression
+                if (wrapper.LiteralDatatype != null)
+                {
+                    <span class="label label-success">@wrapper.LiteralDatatype</span>
+                }
+                if (wrapper.LiteralLanguage != null)
+                {
+                    <span class="label label-info">@wrapper.LiteralLanguage</span>
+                }
+                <span class="whole_iri">@wrapper.OriginalNode</span>
+            }
+
+
+                </td>*@
+
+
+

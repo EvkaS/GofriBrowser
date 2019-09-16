@@ -1,0 +1,43 @@
+﻿@model LinkedDataBrowser.Models.ViewModels.NodeWrapper
+
+@using LinkedDataBrowser.Models.ViewModels;
+@using System.Net;
+@using VDS.RDF;
+
+@if (Model.NodeType == NodeType.Uri)
+{
+    bool infoExists = ViewData.TryGetValue(nameof(SearchInfo), out object obj);
+    SearchInfo info = infoExists ? obj as SearchInfo : null;
+
+    //we always want the first page of the new search result
+    var routeParam = ViewMethods.CreateRouteData(info, Model.ToString(), 1);
+
+    <a asp-controller="Result" asp-action="EntityResultOnlyFive" asp-all-route-data="routeParam">
+        @ViewMethods.TryConvertToPrefixedExpression(Model.ToString())
+    </a>
+    <span class="whole_iri">@WebUtility.UrlDecode(Model.ToString())</span>
+}
+else if (Model.NodeType == NodeType.Literal)
+{
+    @Model.Value
+    if (Model.DataType != null)
+    {
+        <span class="label label-success">@ViewMethods.TryConvertToPrefixedExpression(Model.DataType.ToString())</span>
+    }
+    <span class="label label-info">@Model.Language</span>
+}
+
+else if (Model.NodeType == NodeType.Blank)
+{
+    @Model.ToString()
+}
+
+else if (Model.NodeType == NodeType.GraphLiteral)
+{
+    //TODO: write to log that this happended
+}
+
+else if (Model.NodeType == NodeType.Variable)
+{
+    //TODO: write to log that this happended
+}

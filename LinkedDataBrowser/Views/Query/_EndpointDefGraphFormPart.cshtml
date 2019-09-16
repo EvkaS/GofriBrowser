@@ -1,0 +1,15 @@
+﻿@using LinkedDataBrowser.Models.ViewModels;
+
+<div class="form-group">
+    @Html.Label(nameof(SearchInfo.Endpoints), "Endpoint:", htmlAttributes: new { @class = "col-md-3 control-label" })
+    <div class="col-md-9">
+        @Html.TextBox(nameof(SearchInfo.Endpoints), "http://dbpedia.org/sparql", new { required = true, @class = "form-control", placeholder = "Endpoint" })  @*//TODO: Html.ValidationMessage()*@
+    </div>
+</div>
+
+<div class="form-group">
+    @Html.Label(nameof(SearchInfo.DefaultGraph), "Default graph:", htmlAttributes: new { @class = "col-md-3 control-label" })
+    <div class="col-md-9">
+        @Html.TextBox(nameof(SearchInfo.DefaultGraph), "http://dbpedia.org", new { @class = "form-control", placeholder = "Default graph" }) @*//TODO: should it be url?*@
+    </div>
+</div>

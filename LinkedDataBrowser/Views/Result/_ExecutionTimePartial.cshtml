@@ -1,0 +1,10 @@
+﻿@model TimeSpan?
+
+@if (Model != null)
+{
+    <div>
+        <p>
+            The query took @(((TimeSpan)Model).Milliseconds) milliseconds.
+        </p>
+    </div>
+}

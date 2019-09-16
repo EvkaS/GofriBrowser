@@ -1,0 +1,61 @@
+﻿@model LinkedDataBrowser.Models.ViewModels.PredicateResultWrapperList
+
+@using LinkedDataBrowser.Models.ViewModels;
+
+@{
+    ViewData["Title"] = "EntityResultOnePredicate";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<partial name="_DescriptionPartial" />
+
+@if (ViewData.TryGetValue(nameof(OnePredicateInfo.EntityIri), out object entityIri))
+{
+    <h3 style="color: forestgreen">@ViewMethods.TryConvertToPrefixedExpression(entityIri.ToString())</h3>
+    <partial name="_GoToPagePartial" model="@entityIri.ToString()" />
+}
+
+@*<partial name="_ExecutionTimePartial" model="@ViewData["ExecutionTime"]" />*@
+
+@{
+    SearchInfo info = ViewData[nameof(SearchInfo)] as SearchInfo;
+}
+
+@if (info != null && Model.HasObjects)
+{
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-bordered">
+                <tr>
+                    <th>predicate</th>
+                    <th>object</th>
+                </tr>
+                @foreach (var wrapper in Model)
+                {
+                    <tr>
+                        <td class="q_result" rowspan="@wrapper.ObjectCount.ToString()">
+                            <partial name="_ResultNodeWrapperPartial" model="@wrapper" view-data="@ViewData" />
+                            <span> (@wrapper.ExpectedObjectCount)</span>
+                        </td>
+                        <td class="q_result">
+                            <partial name="_ResultNodeWrapperPartial" model="@wrapper[0]" view-data="@ViewData" />
+                        </td>
+                    </tr>
+                    @for (int i = 1; i < wrapper.ObjectCount; i++)
+                    {
+                        <tr>
+                            <td class="q_result">
+                                <partial name="_ResultNodeWrapperPartial" model="@wrapper[i]" view-data="@ViewData" />
+                            </td>
+                        </tr>
+                    }
+                }
+            </table>
+        </div>
+    </div>
+}
+else
+{
+    <partial name="_NoDataFoundPartial" />
+}

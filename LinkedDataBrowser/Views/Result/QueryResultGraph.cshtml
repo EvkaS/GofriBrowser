@@ -1,0 +1,39 @@
+﻿@model VDS.RDF.IGraph
+
+@using LinkedDataBrowser.Models.ViewModels;
+@using VDS.RDF
+
+@{
+    ViewBag.Title = "QueryResultGraph";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+    <h2>@ViewData["Title"]</h2>
+
+<partial name="_DescriptionPartial" />
+
+@if (ViewData.TryGetValue(nameof(EntityInfo.EntityIri), out object entity))
+{
+    <h3 style="color: forestgreen">@((string)entity)</h3>
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <table class="table table-bordered hide-long">
+            <tr>
+                <th>subject</th>
+                <th>predicate</th>
+                <th>object</th>
+            </tr>
+            @foreach (Triple t in Model.Triples)
+            {
+            <tr>
+
+                <td class="q_result"><partial name="_ResultINodePartial" model="@t.Subject" view-data="@ViewData" /></td>
+                <td class="q_result"><partial name="_ResultINodePartial" model="@t.Predicate" view-data="@ViewData" /></td>
+                <td class="q_result"><partial name="_ResultINodePartial" model="@t.Object" view-data="@ViewData" /></td>
+            </tr>
+            }
+        </table>
+    </div>
+</div>
